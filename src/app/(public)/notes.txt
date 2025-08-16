@@ -1,0 +1,29 @@
+Next.js mendukung folder dengan awalan ( ) → tidak masuk ke URL, tapi jadi wadah buat struktur lebih rapih.
+
+Contoh:
+src/app/
+├── (public)/            # group halaman publik
+│   ├── page.tsx         # homepage "/"
+│   ├── about/
+│   │   └── page.tsx     # "/about" 
+│   └── contact/
+│       └── page.tsx     # "/contact"
+│
+├── (dashboard)/         # group halaman dashboard
+│   ├── dashboard/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── user/
+│   │       └── page.tsx
+│
+└── (auth)/              # group halaman auth
+    ├── login/
+    │   └── page.tsx
+    └── register/
+        └── page.tsx
+
+
+
+langsung juga bisa di halaman app ada folder about, tanpa (group),
+jadi nanti bakal ada folder about di app, tapi bakal ga rapih ketika halaman/folder pada homepage ada banyak,
+dan bisa jadi folder dashboard atau auth tenggelem
