@@ -80,7 +80,11 @@ export function Navbar() {
                             <Link href="/">Home</Link>
                         </NavigationMenuLink>
                     </NavigationMenuItem>
-
+                    <NavigationMenuItem>
+                        <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                            <Link href="/blog">Blog</Link>
+                        </NavigationMenuLink>
+                    </NavigationMenuItem>
                     <NavigationMenuItem>
                         <NavigationMenuTrigger>Menu</NavigationMenuTrigger>
                         <NavigationMenuContent>
