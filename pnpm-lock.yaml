@@ -8,9 +8,21 @@ importers:
 
   .:
     dependencies:
+      '@lexical/code':
+        specifier: ^0.34.0
+        version: 0.34.0
+      '@lexical/link':
+        specifier: ^0.34.0
+        version: 0.34.0
+      '@lexical/list':
+        specifier: ^0.34.0
+        version: 0.34.0
       '@lexical/react':
         specifier: ^0.34.0
         version: 0.34.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(yjs@13.6.27)
+      '@lexical/rich-text':
+        specifier: ^0.34.0
+        version: 0.34.0
       '@radix-ui/react-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
