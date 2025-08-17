@@ -47,6 +47,7 @@ function ListItem({
 }
 
 import { useEffect, useState } from "react"
+import Image from "next/image"
 export function Navbar() {
     const { setTheme, resolvedTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
@@ -64,11 +65,12 @@ export function Navbar() {
         <div className="flex items-center justify-between px-4">
             {/* Logo di kiri */}
             <div className="flex items-center space-x-2">
-                <img
+                <Image   
                     src={resolvedTheme === "light" ? "/logo-text-dark.svg" : "/logo-text-light.svg"}
                     alt="Logo"
-                    className="h-12 w-auto"
-                />
+                    className="h-12 w-auto" 
+                    width={120}
+                    height={48} />
             </div>
             <NavigationMenu viewport={false}>
                 <NavigationMenuList>
