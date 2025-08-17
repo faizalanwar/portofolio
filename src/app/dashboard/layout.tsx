@@ -1,14 +1,24 @@
-import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
+import { NavbarComponent } from "@/components/dashboard/navbar";
+import { AppSidebar } from "@/components/dashboard/sidebar"; // ✅ ini panggil sidebar
+import {
+    SidebarInset,
+    SidebarProvider,
+} from "@/components/ui/sidebar";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     return (
-        <div className="flex h-screen">
-            <div className="flex-1 flex flex-col">
-                <SidebarProvider>
-                    <Sidebar />
-                    <main className="p-4">{children} ini layout dashboard</main>
-                </SidebarProvider>
-            </div>
-        </div >
+        <SidebarProvider>
+            <AppSidebar />
+            <SidebarInset>
+                <NavbarComponent />
+                <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+                    <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                        <div className="p-4">
+                            {children}
+                        </div>
+                    </div>
+                </div>
+            </SidebarInset>
+        </SidebarProvider>
     );
 }

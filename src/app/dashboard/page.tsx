@@ -1,7 +1,7 @@
-const dashboard = () => {
+export default function Page() {
     return (
-        <div>dashboard</div>
+        <>
+            sdfd
+        </>
     )
 }
-
-export default dashboard
