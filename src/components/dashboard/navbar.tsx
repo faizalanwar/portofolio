@@ -1,3 +1,4 @@
+"use client"
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -10,7 +11,10 @@ import { Separator } from "@/components/ui/separator"
 import {
     SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { usePathname } from "next/navigation"
 export function NavbarComponent() {
+    const pathname = usePathname()
+
     return (
         <header className="flex h-16 shrink-0 items-center gap-2">
             <div className="flex items-center gap-2 px-4">
@@ -22,14 +26,20 @@ export function NavbarComponent() {
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem className="hidden md:block">
-                            <BreadcrumbLink href="#">
-                                Building Your Application
-                            </BreadcrumbLink>
+                            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
-                        <BreadcrumbSeparator className="hidden md:block" />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                        </BreadcrumbItem>
+
+                        {pathname.split("/").at(-1) !== "dashboard" && (
+                            <>
+                                <BreadcrumbSeparator className="hidden md:block" />
+                                <BreadcrumbItem>
+                                    <BreadcrumbPage className="capitalize">
+                                        {pathname.split("/").at(-1)}
+                                    </BreadcrumbPage>
+                                </BreadcrumbItem>
+                            </>
+                        )}
+
                     </BreadcrumbList>
                 </Breadcrumb>
             </div>

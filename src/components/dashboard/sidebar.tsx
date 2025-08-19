@@ -3,16 +3,17 @@
 import * as React from "react"
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { useTheme } from "next-themes"
+import { usePathname } from "next/navigation"
 
 // Lucide Icons
 import {
     Frame,
     LifeBuoy,
-    Settings2,
     SquareTerminal,
     ChevronRight,
-    Folder,
+    Folder as FolderIcon,
     MoreHorizontal,
     Share,
     Trash2,
@@ -22,9 +23,14 @@ import {
     CreditCard,
     LogOut,
     Sparkles,
-    type LucideIcon,
     Home,
+    Newspaper as NewspaperIcon,
+    UserCircle,
+    EllipsisVertical,
 } from "lucide-react"
+
+// Tabler Icons
+import { IconDashboard, IconMail, IconUsers } from "@tabler/icons-react"
 
 // UI Components
 import {
@@ -63,26 +69,21 @@ import {
     SidebarMenuSubItem,
     useSidebar,
 } from "@/components/ui/sidebar"
+import { Badge } from "../ui/badge"
 
 // Types
 interface NavItem {
     title: string
     url: string
-    icon: LucideIcon
-    isActive?: boolean
-    items?: { title: string; url: string }[]
+    icon: React.ComponentType<any>
+    items?: { title: string; url: string, badge?: { title: string; variant: BadgeVariant } }[]
 }
+type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
 
 interface Project {
     name: string
     url: string
-    icon: LucideIcon
-}
-
-interface SecondaryNavItem {
-    title: string
-    url: string
-    icon: LucideIcon
+    icon: React.ComponentType<any>
 }
 
 interface User {
@@ -91,109 +92,145 @@ interface User {
     avatar: string
 }
 
+// ------------------ DATA ------------------
 const data = {
     user: {
         name: "shadcn",
         email: "m@example.com",
         avatar: "/avatars/shadcn.jpg",
-    },
+    } as User,
     navMain: [
+        { title: "Dashboard", url: "/dashboard", icon: IconDashboard },
+        { title: "Projects", url: "/dashboard/project", icon: FolderIcon },
+        { title: "Blog", url: "/dashboard/blog", icon: NewspaperIcon },
+        { title: "Team", url: "/dashboard/team", icon: IconUsers },
+        { title: "Contact", url: "/dashboard/contact", icon: IconMail },
         {
             title: "Playground",
-            url: "#",
+            url: "/dashboard/playground",
             icon: SquareTerminal,
-            isActive: true,
             items: [
-                { title: "History", url: "#" },
-                { title: "Starred", url: "#" },
-                { title: "Settings", url: "#" },
+                { title: "Crud Array", url: "/dashboard/playground/crud-array", badge: { title: "Soon", variant: "outline" } },
+                { title: "Crud Prisma ", url: "/dashboard/playground/crud-prisma-postgresql", badge: { title: "PostgreSql", variant: "default" } },
+                { title: "Crud Prisma", url: "/dashboard/playground/crud-prisma", badge: { title: "New", variant: "secondary" } },
+                { title: "Crud MongoDB", url: "/dashboard/playground/crud-mongodb" },
+                { title: "Crud MySQL", url: "/dashboard/playground/crud-mysql", badge: { title: "Soon", variant: "outline" } },
+                { title: "Crud SQLite", url: "/dashboard/playground/crud-sqlite" },
+                { title: "Crud Supabase", url: "/dashboard/playground/crud-supabase", badge: { title: "Hot", variant: "destructive" } },
+                { title: "Crud PlanetScale", url: "/dashboard/playground/crud-planetscale" },
+                { title: "Crud Postgres", url: "/dashboard/playground/crud-postgres" },
+                { title: "Crud Firebase", url: "/dashboard/playground/crud-firebase" },
             ],
         },
-        {
-            title: "Settings",
-            url: "#",
-            icon: Settings2,
-            items: [
-                { title: "General", url: "#" },
-                { title: "Team", url: "#" },
-                { title: "Billing", url: "#" },
-                { title: "Limits", url: "#" },
-            ],
-        },
-    ],
+    ] as NavItem[],
     projects: [
-        { name: "Design Engineering", url: "#", icon: Frame },
-    ],
+        {
+            name: "Design Engineering",
+            url: "/dashboard/project/design-engineering",
+            icon: Frame,
+        },
+    ] as Project[],
     navSecondary: [
-        { title: "Support", url: "#", icon: LifeBuoy },
+        { title: "Support", url: "/dashboard/support", icon: LifeBuoy },
         { title: "Homepage", url: "/", icon: Home },
-    ],
+    ] as NavItem[],
+} as const
+
+// ------------------ HELPERS ------------------
+function isRouteActive(pathname: string, url: string): boolean {
+    if (!url || url === "#") return false
+    // hanya root dashboard yg strict
+    if (url === "/dashboard") {
+        return pathname === "/dashboard"
+    }
+    return pathname === url || pathname.startsWith(url + "/")
 }
 
-const NavMain = () => {
+// ------------------ SUB COMPONENTS ------------------
+const NavMain: React.FC = () => {
+    const { isMobile } = useSidebar()
+    const pathname = usePathname()
+
     return (
         <SidebarGroup>
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
             <SidebarMenu>
-                {data.navMain.map((item) => (
-                    <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton asChild tooltip={item.title}>
-                                <a href={item.url}>
-                                    <item.icon />
-                                    <span>{item.title}</span>
-                                </a>
-                            </SidebarMenuButton>
-                            {item.items?.length ? (
-                                <>
-                                    <CollapsibleTrigger asChild>
-                                        <SidebarMenuAction className="data-[state=open]:rotate-90">
-                                            <ChevronRight />
-                                            <span className="sr-only">Toggle</span>
-                                        </SidebarMenuAction>
-                                    </CollapsibleTrigger>
-                                    <CollapsibleContent>
-                                        <SidebarMenuSub>
-                                            {item.items.map((subItem) => (
-                                                <SidebarMenuSubItem key={subItem.title}>
-                                                    <SidebarMenuSubButton asChild>
-                                                        <a href={subItem.url}>
-                                                            <span>{subItem.title}</span>
-                                                        </a>
-                                                    </SidebarMenuSubButton>
-                                                </SidebarMenuSubItem>
-                                            ))}
-                                        </SidebarMenuSub>
-                                    </CollapsibleContent>
-                                </>
-                            ) : null}
-                        </SidebarMenuItem>
-                    </Collapsible>
-                ))}
+                {data.navMain.map((item) => {
+                    const active = isRouteActive(pathname, item.url)
+                    const anyChildActive =
+                        item.items?.some((x) => isRouteActive(pathname, x.url)) ?? false
+                    const defaultOpen = active || anyChildActive
+
+                    return (
+                        <Collapsible key={item.title} asChild defaultOpen={defaultOpen}>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton
+                                    asChild
+                                    tooltip={item.title}
+                                    data-active={active || undefined}
+                                >
+                                    <Link href={item.url}>
+                                        <item.icon className="h-4 w-4" />
+                                        <span>{item.title}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+
+                                {item.items?.length ? (
+                                    <>
+                                        <CollapsibleTrigger asChild>
+                                            <SidebarMenuAction className="data-[state=open]:rotate-90">
+                                                <ChevronRight className="h-4 w-4" />
+                                                <span className="sr-only">Toggle</span>
+                                            </SidebarMenuAction>
+                                        </CollapsibleTrigger>
+
+                                        <CollapsibleContent>
+                                            <SidebarMenuSub>
+                                                {item.items.map((sub) => {
+                                                    const subActive = isRouteActive(pathname, sub.url)
+                                                    return (
+                                                        <SidebarMenuSubItem key={sub.title}>
+                                                            <SidebarMenuSubButton
+                                                                asChild
+                                                                data-active={subActive || undefined}
+                                                            >
+                                                                <Link href={sub.url} className="flex justify-between items-center">
+                                                                    <span>{sub.title}</span>
+                                                                    {sub.badge && (
+                                                                        <Badge variant={sub.badge.variant} className="px-2 py-0.5 text-xs">
+                                                                            {sub.badge.title}
+                                                                        </Badge>
+                                                                    )}
+                                                                </Link>
+                                                            </SidebarMenuSubButton>
+                                                        </SidebarMenuSubItem>
+                                                    )
+                                                })}
+                                            </SidebarMenuSub>
+                                        </CollapsibleContent>
+                                    </>
+                                ) : null}
+                            </SidebarMenuItem>
+                        </Collapsible>
+                    )
+                })}
             </SidebarMenu>
-        </SidebarGroup>
-    )
-}
 
-const NavProjects = () => {
-    const { isMobile } = useSidebar()
-
-    return (
-        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Projects</SidebarGroupLabel>
             <SidebarMenu>
                 {data.projects.map((item) => (
                     <SidebarMenuItem key={item.name}>
                         <SidebarMenuButton asChild>
-                            <a href={item.url}>
-                                <item.icon />
+                            <Link href={item.url}>
+                                <item.icon className="h-4 w-4" />
                                 <span>{item.name}</span>
-                            </a>
+                            </Link>
                         </SidebarMenuButton>
+
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuAction showOnHover>
-                                    <MoreHorizontal />
+                                    <MoreHorizontal className="h-4 w-4" />
                                     <span className="sr-only">More</span>
                                 </SidebarMenuAction>
                             </DropdownMenuTrigger>
@@ -203,16 +240,16 @@ const NavProjects = () => {
                                 align={isMobile ? "end" : "start"}
                             >
                                 <DropdownMenuItem>
-                                    <Folder className="text-muted-foreground" />
+                                    <FolderIcon className="h-4 w-4 text-muted-foreground mr-2" />
                                     <span>View Project</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <Share className="text-muted-foreground" />
+                                    <Share className="h-4 w-4 text-muted-foreground mr-2" />
                                     <span>Share Project</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                    <Trash2 className="text-muted-foreground" />
+                                <DropdownMenuItem className="text-destructive focus:text-destructive">
+                                    <Trash2 className="h-4 w-4 mr-2" />
                                     <span>Delete Project</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -224,28 +261,37 @@ const NavProjects = () => {
     )
 }
 
-const NavSecondary = () => {
+const NavSecondary: React.FC = () => {
+    const pathname = usePathname()
+
     return (
         <SidebarGroup className="mt-auto">
             <SidebarGroupContent>
                 <SidebarMenu>
-                    {data.navSecondary.map((item) => (
-                        <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton asChild size="sm">
-                                <a href={item.url}>
-                                    <item.icon />
-                                    <span>{item.title}</span>
-                                </a>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    ))}
+                    {data.navSecondary.map((item) => {
+                        const active = isRouteActive(pathname, item.url)
+                        return (
+                            <SidebarMenuItem key={item.title}>
+                                <SidebarMenuButton
+                                    asChild
+                                    size="sm"
+                                    data-active={active || undefined}
+                                >
+                                    <Link href={item.url}>
+                                        <item.icon className="h-4 w-4" />
+                                        <span>{item.title}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )
+                    })}
                 </SidebarMenu>
             </SidebarGroupContent>
         </SidebarGroup>
     )
 }
 
-const NavUser = () => {
+const NavUser: React.FC = () => {
     const { isMobile } = useSidebar()
     const user = data.user
 
@@ -266,9 +312,11 @@ const NavUser = () => {
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">{user.name}</span>
-                                <span className="truncate text-xs">{user.email}</span>
+                                <span className="text-muted-foreground truncate text-xs">
+                                    {user.email}
+                                </span>
                             </div>
-                            <ChevronsUpDown className="ml-auto size-4" />
+                            <EllipsisVertical className="ml-auto size-4" />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -287,35 +335,30 @@ const NavUser = () => {
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-medium">{user.name}</span>
-                                    <span className="truncate text-xs">{user.email}</span>
+                                    <span className="text-muted-foreground truncate text-xs">
+                                        {user.email}
+                                    </span>
                                 </div>
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
-                                <Sparkles />
-                                Upgrade to Pro
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck />
+                                <UserCircle className="h-4 w-4 mr-2" />
                                 Account
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                                <CreditCard />
+                                <CreditCard className="h-4 w-4 mr-2" />
                                 Billing
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                                <Bell />
+                                <Bell className="h-4 w-4 mr-2" />
                                 Notifications
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
-                            <LogOut />
+                            <LogOut className="h-4 w-4 mr-2" />
                             Log out
                         </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -325,30 +368,39 @@ const NavUser = () => {
     )
 }
 
-const LogoComponent = () => {
-    const { resolvedTheme } = useTheme();
-    const [mounted, setMounted] = useState(false);
+const LogoComponent: React.FC = () => {
+    const { resolvedTheme } = useTheme()
+    const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
-        setMounted(true);
-    }, []);
+        setMounted(true)
+    }, [])
 
     if (!mounted) {
-        return null;
+        return (
+            <div className="h-7 w-7 rounded bg-muted animate-pulse" />
+        )
     }
+
+    const src = resolvedTheme === "dark" ? "/logo-light.svg" : "/logo-dark.svg"
 
     return (
         <Image
-            src={resolvedTheme === "light" ? "/logo-light.svg" : "/logo-light.svg"}
+            src={src}
             alt="Logo"
-            className="h-12 w-auto"
-            width={120}
-            height={48}
+            width={28}
+            height={28}
+            className="inline-block"
             priority
+            onError={(e) => {
+                // Fallback jika gambar tidak ditemukan
+                e.currentTarget.style.display = 'none'
+            }}
         />
     )
 }
 
+// ------------------ EXPORT KOMPONEN UTAMA ------------------
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar variant="inset" {...props}>
@@ -356,27 +408,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <a href="#">
-                                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                            <Link href="/">
+                                <div className="flex items-center gap-3">
                                     <LogoComponent />
+                                    <div className="grid text-left text-sm leading-tight">
+                                        <span className="truncate font-medium">Faizal Anwar</span>
+                                        <span className="truncate text-xs">Portfolio</span>
+                                    </div>
                                 </div>
-                                <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-medium">Faizal Anwar</span>
-                                    <span className="truncate text-xs">Portofolio</span>
-                                </div>
-                            </a>
+                            </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
+
             <SidebarContent>
                 <NavMain />
-                <NavProjects />
                 <NavSecondary />
             </SidebarContent>
+
             <SidebarFooter>
                 <NavUser />
             </SidebarFooter>
         </Sidebar>
     )
 }
+
+export default AppSidebar

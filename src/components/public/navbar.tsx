@@ -17,7 +17,7 @@ import {
     NavigationMenuTrigger,
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -229,9 +229,12 @@ export function Navbar() {
                         {/* About */}
                         <NavigationMenuItem>
                             <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                                <Link href="/about">About Me</Link>
+                                <Link href="/resume" className="inline-flex items-center gap-2 p-0">
+                                    Resume <Badge className="m-0" variant="default">JSON</Badge>
+                                </Link>
                             </NavigationMenuLink>
                         </NavigationMenuItem>
+
 
 
                         {/* Portofolio */}
