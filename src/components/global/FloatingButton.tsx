@@ -7,7 +7,7 @@ export default function FloatingButton() {
             <Button
                 asChild
                 variant="default"
-                className="fixed bottom-6 left-6 rounded-full shadow-lg"
+                className="fixed bottom-6 right-6 rounded-full shadow-lg"
             >
                 {/* layout.tsx itu server component, jadi jika diubah pake useclient , semua child akan jadi client componen dan itu ngaruh ke performa  */}
                 {/* ini tombol global. jadi bisa dipake di semua halaman */}

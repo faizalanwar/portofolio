@@ -3,6 +3,6 @@ import { Terminal } from "@/components/global/terminal";
 
 export default function page() {
     return (
-        <div>D</div>
+        <div><Terminal /></div>
     )
 }
