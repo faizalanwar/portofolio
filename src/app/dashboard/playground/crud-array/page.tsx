@@ -231,7 +231,7 @@ export default function SimpleCrudPage() {
                                                     <AlertDialogHeader>
                                                         <AlertDialogTitle>Hapus item?</AlertDialogTitle>
                                                         <AlertDialogDescription>
-                                                            Item "{item.title}" akan dihapus. Tindakan ini tidak dapat dibatalkan.
+                                                            Item  {item.title}  akan dihapus. Tindakan ini tidak dapat dibatalkan.
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
