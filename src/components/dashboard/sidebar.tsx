@@ -17,12 +17,9 @@ import {
     MoreHorizontal,
     Share,
     Trash2,
-    BadgeCheck,
     Bell,
-    ChevronsUpDown,
     CreditCard,
     LogOut,
-    Sparkles,
     Home,
     Newspaper as NewspaperIcon,
     UserCircle,
@@ -75,7 +72,7 @@ import { Badge } from "../ui/badge"
 interface NavItem {
     title: string
     url: string
-    icon: React.ComponentType<any>
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
     items?: { title: string; url: string, badge?: { title: string; variant: BadgeVariant } }[]
 }
 type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
@@ -83,7 +80,7 @@ type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
 interface Project {
     name: string
     url: string
-    icon: React.ComponentType<any>
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
 }
 
 interface User {
