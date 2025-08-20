@@ -37,7 +37,7 @@ export default function NewBlog() {
                 value={thumbnail}
                 onChange={(e) => setThumbnail(e.target.value)}
             />
-            <LexicalEditor onChange={setDescription} />
+            <LexicalEditor onChange={(editorState) => setDescription(editorState)} />
             <button
                 className="bg-blue-500 text-white px-4 py-2 rounded"
                 onClick={handleSave}

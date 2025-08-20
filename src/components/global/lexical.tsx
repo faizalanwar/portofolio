@@ -16,6 +16,7 @@ import {
     FORMAT_ELEMENT_COMMAND,
     UNDO_COMMAND,
     REDO_COMMAND,
+    EditorState,
 } from "lexical";
 
 import { Button } from "@/components/ui/button";
@@ -63,7 +64,11 @@ function ToolbarPlugin() {
     );
 }
 
-export default function LexicalEditor() {
+interface LexicalEditorProps {
+    onChange?: (editorState: EditorState | null) => void;
+}
+
+export default function LexicalEditor({ onChange }: LexicalEditorProps) {
     const { theme: mode } = useTheme();
 
     const initialConfig = {
@@ -90,7 +95,7 @@ export default function LexicalEditor() {
                 />
                 <HistoryPlugin />
                 <AutoFocusPlugin />
-                <OnChangePlugin onChange={() => { }} />
+                <OnChangePlugin onChange={onChange || (() => {})} />
             </LexicalComposer>
         </div>
     );
